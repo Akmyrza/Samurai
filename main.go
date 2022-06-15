@@ -8,7 +8,7 @@ import (
 )
 
 type Word struct {
-	Name string
+	Name  string
 	Count int
 }
 
@@ -21,41 +21,39 @@ func (a ByCount) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func main() {
 
 	f, _ := os.Open("mobydick.txt")
-	res, _ := ioutil.ReadAll(f)	
+	res, _ := ioutil.ReadAll(f)
 
 	var str string
-	var Words[] Word
+	var Words []Word
 	var found bool = false
 
 	for _, elem := range res {
 
-		if (65 <= elem && elem <= 90) {
-			str = str + string(elem + 32)			
-		}
+		if 65 <= elem && elem <= 90 {
+			str = str + string(elem+32)
+		} else if 97 <= elem && elem <= 122 {
+			str = str + string(elem)
+		} else {
+			//if elem == 32 || elem == 10 {
+				if str != "" {
 
-		if (97 <= elem && elem <= 122) {
-			str = str + string(elem)			
-		}
-		
-		if elem == 32 || elem == 10 {
-			if str != "" {				
+					found = false
 
-				found = false
-
-				for i, v := range Words {
-					if v.Name == str {
-						Words[i].Count++ 
-						found = true
-						break
+					for i, v := range Words {
+						if v.Name == str {
+							Words[i].Count++
+							found = true
+							break
+						}
 					}
-				}
 
-				if !found {
-					Words = append(Words, Word{str, 1})				
-				}
+					if !found {
+						Words = append(Words, Word{str, 1})
+					}
 
-				str = ""
-			}
+					str = ""
+				}
+			//}
 		}
 
 	}
