@@ -21,6 +21,8 @@ func (a ByCount) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func main() {
 
 	f, _ := os.Open("mobydick.txt")
+	defer f.Close()
+	
 	res, _ := ioutil.ReadAll(f)
 
 	var str string
@@ -67,5 +69,4 @@ func main() {
 		}
 	}
 
-	f.Close()
 }
