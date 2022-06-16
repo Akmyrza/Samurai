@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -15,25 +16,7 @@ type Word struct {
 	Count int
 }
 
-type ByCount []Word
-
-func (a ByCount) Len() int           { return len(a) }
-func (a ByCount) Less(i, j int) bool { return a[i].Count > a[j].Count }
-func (a ByCount) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-
-func CompareTwoByteSlices(a, b []byte) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func main() {
+func giveMeFileBro() *os.File {
 
 	filepath := flag.String("path", "mobydick.txt", "path to file")
 	flag.Parse()
@@ -42,16 +25,21 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
 
-	var str []byte
+	return file
+}
+
+func readThatFileBro(thatfile *os.File) {
+
+	var theword []byte
 	var Words []Word
 	var found bool
 
-	reader := bufio.NewReader(file)
+	reader := bufio.NewReader(thatfile)
 
 	for {
-		elem, err := reader.ReadByte()
+		onebyte, err := reader.ReadByte()
+
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -60,41 +48,46 @@ func main() {
 			}
 		}
 
-		if 65 <= elem && elem <= 90 {
-			str = append(str, elem+32)
-		} else if 97 <= elem && elem <= 122 {
-			str = append(str, elem)
+		if 65 <= onebyte && onebyte <= 90 { // from A to Z
+			theword = append(theword, onebyte+32)
+		} else if 97 <= onebyte && onebyte <= 122 { // a to z
+			theword = append(theword, onebyte)
 		} else {
-			if str != nil {
+			if theword != nil {
 
 				found = false
 
-				for i, v := range Words {
-					if CompareTwoByteSlices(v.Name, str) {
-						Words[i].Count++
+				for index, word := range Words {
+					if bytes.Compare(word.Name, theword) == 0 {
+						Words[index].Count++
 						found = true
 						break
 					}
 				}
+
 				if !found {
-					Words = append(Words, Word{str, 1})
+					Words = append(Words, Word{theword, 1})
 				}
 
-				str = nil
+				theword = nil
 			}
-
-		}
-
-	}
-
-	sort.Sort(ByCount(Words))
-
-	for i, elem := range Words {
-		stringfrombytes := fmt.Sprintf("%s", elem.Name)
-		fmt.Println(stringfrombytes, elem.Count)
-		if i == 20 {
-			break
 		}
 	}
 
+	sort.Slice(Words[:], func(i, j int) bool {
+		return Words[i].Count > Words[j].Count
+	})
+
+	for _, word := range Words[:20] {
+		str := fmt.Sprintf("%s", word.Name)
+		fmt.Println(str, word.Count)
+	}
+}
+
+func main() {
+
+	thatfile := giveMeFileBro()
+	readThatFileBro(thatfile)
+
+	defer thatfile.Close()
 }
