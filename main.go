@@ -69,7 +69,7 @@ func main() {
 						found = true
 						break
 					}
-
+				}
 				if !found {
 					Words = append(Words, Word{str, 1})
 				}
@@ -80,6 +80,7 @@ func main() {
 		}
 
 	}
+
 
 	sort.Sort(ByCount(Words))
 
