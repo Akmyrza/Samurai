@@ -11,7 +11,11 @@ import (
 )
 
 type Word struct {
+<<<<<<< HEAD
 	Name  []byte
+=======
+	Name  string
+>>>>>>> bfd01cd0c370fb0a1e93599659f5aa189b52cad9
 	Count int
 }
 
@@ -35,6 +39,7 @@ func CompareTwoByteSlices(a, b []byte) bool {
 
 func main() {
 
+<<<<<<< HEAD
 	start := time.Now()
 
 	var path = flag.String("path", "default value", "path to file")
@@ -51,10 +56,21 @@ func main() {
 	var str []byte
 	var Words []Word
 	var found bool
+=======
+	f, _ := os.Open("mobydick.txt")
+	defer f.Close()
+	
+	res, _ := ioutil.ReadAll(f)
+
+	var str string
+	var Words []Word
+	var found bool = false
+>>>>>>> bfd01cd0c370fb0a1e93599659f5aa189b52cad9
 
 	for _, elem := range res {
 
 		if 65 <= elem && elem <= 90 {
+<<<<<<< HEAD
 			str = append(str, elem+32)
 		} else if 97 <= elem && elem <= 122 {
 			str = append(str, elem)
@@ -68,9 +84,26 @@ func main() {
 						Words[i].Count++
 						found = true
 						break
-					}
-				}
+=======
+			str = str + string(elem+32)
+		} else if 97 <= elem && elem <= 122 {
+			str = str + string(elem)
+		} else {
+			//if elem == 32 || elem == 10 {
+				if str != "" {
 
+					found = false
+
+					for i, v := range Words {
+						if v.Name == str {
+							Words[i].Count++
+							found = true
+							break
+						}
+>>>>>>> bfd01cd0c370fb0a1e93599659f5aa189b52cad9
+					}
+
+<<<<<<< HEAD
 				if !found {
 					Words = append(Words, Word{str, 1})
 				}
@@ -78,6 +111,15 @@ func main() {
 				str = nil
 			}
 
+=======
+					if !found {
+						Words = append(Words, Word{str, 1})
+					}
+
+					str = ""
+				}
+			//}
+>>>>>>> bfd01cd0c370fb0a1e93599659f5aa189b52cad9
 		}
 
 	}
@@ -92,6 +134,9 @@ func main() {
 		}
 	}
 
+<<<<<<< HEAD
 	elapsed := time.Since(start)
 	fmt.Printf("time %s", elapsed)
+=======
+>>>>>>> bfd01cd0c370fb0a1e93599659f5aa189b52cad9
 }
