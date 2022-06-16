@@ -1,9 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"sort"
@@ -37,7 +38,7 @@ func main() {
 
 	start := time.Now()
 
-	var path = flag.String("path", "default value", "path to file")
+	var path = flag.String("path", "mobydick.txt", "path to file")
 	flag.Parse()
 
 	f, err := os.Open(*path)
@@ -46,13 +47,21 @@ func main() {
 	}
 	defer f.Close()
 
-	res, _ := ioutil.ReadAll(f)
-
 	var str []byte
 	var Words []Word
 	var found bool
 
-	for _, elem := range res {
+	reader := bufio.NewReader(f)
+
+	for {
+		elem, err := reader.ReadByte()
+		if err != nil {
+			if err == io.EOF {
+				break
+			} else {
+				log.Fatal(err)
+			}
+		}
 
 		if 65 <= elem && elem <= 90 {
 			str = append(str, elem+32)
@@ -80,7 +89,6 @@ func main() {
 		}
 
 	}
-
 
 	sort.Sort(ByCount(Words))
 
