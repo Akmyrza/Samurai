@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"sort"
-	"time"
 )
 
 type Word struct {
@@ -36,22 +35,20 @@ func CompareTwoByteSlices(a, b []byte) bool {
 
 func main() {
 
-	start := time.Now()
-
-	var path = flag.String("path", "mobydick.txt", "path to file")
+	filepath := flag.String("path", "mobydick.txt", "path to file")
 	flag.Parse()
 
-	f, err := os.Open(*path)
+	file, err := os.Open(*filepath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer file.Close()
 
 	var str []byte
 	var Words []Word
 	var found bool
 
-	reader := bufio.NewReader(f)
+	reader := bufio.NewReader(file)
 
 	for {
 		elem, err := reader.ReadByte()
@@ -100,6 +97,4 @@ func main() {
 		}
 	}
 
-	elapsed := time.Since(start)
-	fmt.Printf("time %s", elapsed)
 }
